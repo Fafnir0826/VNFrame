@@ -9,6 +9,8 @@ public class Configs
 
     //Dialouge Line Format
     //{n{as cn}{ at x{:y}}{ [1:e{ + 1:e}]} "d"} {c(a){, c(a)}}
+
+    
    
 
 }

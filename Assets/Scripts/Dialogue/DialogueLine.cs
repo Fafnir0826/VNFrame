@@ -8,16 +8,16 @@ namespace DIALOGUE
     public class DialogueLine
     {
         public string speaker;
-        public string dialogue;
+        public DialogueData dialogue;
         public string commands;
 
         public bool hasSpeaker => speaker != string.Empty;
-        public bool hasDialogue => dialogue != string.Empty;
+        public bool hasDialogue => dialogue.hasDialogue;
         public bool hasCommands => commands != string.Empty;
         public DialogueLine(string speaker, string dialogue, string commands)
         {
             this.speaker = speaker;
-            this.dialogue = dialogue;
+            this.dialogue = new DialogueData(dialogue);
             this.commands = commands;
         }
     }
