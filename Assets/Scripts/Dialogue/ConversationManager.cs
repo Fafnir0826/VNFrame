@@ -50,7 +50,9 @@ namespace DIALOGUE
                 if (line.hasCommands)
                     yield return Line_RunCommands(line);
 
-
+                if (line.hasDialogue)
+                    //Wait for user input
+                    yield return WaitForUserInput();
             }
         }
 
@@ -58,19 +60,24 @@ namespace DIALOGUE
         IEnumerator Line_RunDialogue(DialogueLine line)
         {
             if (line.hasSpeaker)
-                dialogueSystem.ShowSpeakerName(line.speaker);
+                dialogueSystem.ShowSpeakerName(line.speakerData.displayname);
 
 
-            yield return BuildLineSegments(line.dialogue);
-
-            //wait for user input
-            yield return WaitForUserInput();
-
+            yield return BuildLineSegments(line.dialogueData);
 
         }
         IEnumerator Line_RunCommands(DialogueLine line)
         {
-            Debug.Log(line.commands);
+            List<CommandData.Command> commands = line.commandData.commands;
+
+            foreach (CommandData.Command command in commands)
+            {
+                if (command.waitForCompletion)
+                    yield return CommandManager.instance.Execute(command.name, command.arguments);
+                else
+                    CommandManager.instance.Execute(command.name, command.arguments);
+            }
+
             yield return null;
         }
         IEnumerator BuildLineSegments(DialogueData line)
