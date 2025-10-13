@@ -3,30 +3,33 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class CommandDatabase
+namespace COMMANDS
 {
-    private Dictionary<string, Delegate> database = new Dictionary<string, Delegate>();
-    public bool hasCommand(string commandName) => database.ContainsKey(commandName);
-
-    public void AddCommand(string commandName, Delegate command)
+    public class CommandDatabase
     {
-        if (!database.ContainsKey(commandName))
+        private Dictionary<string, Delegate> database = new Dictionary<string, Delegate>();
+        public bool hasCommand(string commandName) => database.ContainsKey(commandName);
+
+        public void AddCommand(string commandName, Delegate command)
         {
-            database.Add(commandName, command);
+            if (!database.ContainsKey(commandName))
+            {
+                database.Add(commandName, command);
+            }
+            else
+                Debug.LogError($"Command already exists in the database '{commandName}'");
         }
-        else
-            Debug.LogError($"Command already exists in the database '{commandName}'");
-    }
 
-    public Delegate GetCommand(string commandName)
-    {
-        if (!database.ContainsKey(commandName))
+        public Delegate GetCommand(string commandName)
         {
-            Debug.LogError($"Command already exists in the database '{commandName}'");
-            return null;
+            if (!database.ContainsKey(commandName))
+            {
+                Debug.LogError($"Command already exists in the database '{commandName}'");
+                return null;
+            }
+            return database[commandName];
+
+
         }
-        return database[commandName];
-
-
     }
 }
