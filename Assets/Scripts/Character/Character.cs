@@ -7,6 +7,10 @@ namespace CHARACTERS
     {
         public string name = "";
         public RectTransform root = null;
+        public Character(string name)
+        {
+            this.name = name;
+        }
         public enum CharacterType
         {
             Text,
