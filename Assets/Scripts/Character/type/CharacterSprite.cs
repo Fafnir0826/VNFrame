@@ -6,7 +6,7 @@ namespace CHARACTERS
 {
     public class CharacterSprite : Character
     {
-        public CharacterSprite(string name) : base(name)
+        public CharacterSprite(string name, CharacterConfig config) : base(name, config)
         {
             Debug.Log(name);
         }

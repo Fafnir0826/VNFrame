@@ -11,7 +11,7 @@ namespace CHARACTERS
     {
         public CharacterConfig[] characters;
 
-        public CharacterConfig getConfig(string characterName)
+        public CharacterConfig GetConfig(string characterName)
         {
             characterName = characterName.ToLower();
 

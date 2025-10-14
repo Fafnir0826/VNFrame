@@ -6,7 +6,7 @@ namespace CHARACTERS
 {
     public class CharacterModel3D : Character
     {
-        public CharacterModel3D(string name) : base(name)
+        public CharacterModel3D(string name,CharacterConfig config) : base(name, config)
         {
 
         }

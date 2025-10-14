@@ -18,7 +18,18 @@ namespace CHARACTERS
         {
             instance = this;
         }
-
+        public CharacterConfig GetCharacterConfig(string characterName)
+        {
+            return config.GetConfig(characterName);
+        }
+        public Character GetCharacter(string characterName, bool createIfDoesNotExist = false)
+        {
+            if (characters.ContainsKey(characterName.ToLower()))
+                return characters[characterName.ToLower()];
+            else if (createIfDoesNotExist)
+                return CreateCharacter(characterName);
+            return null;
+        }
         public Character CreateCharacter(string characterName)
         {
             if (characters.ContainsKey(characterName.ToLower()))
@@ -39,27 +50,28 @@ namespace CHARACTERS
             CHARACTERINFO result = new CHARACTERINFO();
 
             result.name = characterName;
-            result.config = config.getConfig(characterName);
+            result.config = config.GetConfig(characterName);
             return result;
 
         }
 
         private Character CreateCharacterFromInfo(CHARACTERINFO info)
         {
+
             switch (info.config.characterType)
             {
                 case Character.CharacterType.Text:
-                    return new CharacterText(info.name);
+                    return new CharacterText(info.name, info.config);
 
                 case Character.CharacterType.Sprite:
                 case Character.CharacterType.SpriteSheet:
-                    return new CharacterSprite(info.name);
+                    return new CharacterSprite(info.name, info.config);
 
                 case Character.CharacterType.Live2D:
-                    return new CharacterLive2D(info.name);
+                    return new CharacterLive2D(info.name, info.config);
 
                 case Character.CharacterType.Model3D:
-                    return new CharacterModel3D(info.name);
+                    return new CharacterModel3D(info.name, info.config);
                 default:
                     return null;
             }
