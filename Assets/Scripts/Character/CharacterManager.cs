@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net.NetworkInformation;
-using Unity.VisualScripting;
 using UnityEngine;
 using DIALOGUE;
 
@@ -14,6 +12,14 @@ namespace CHARACTERS
         private Dictionary<string, Character> characters = new Dictionary<string, Character>();
 
         private CharacterConfigSO config => DialogueSystem.instance.config.characterConfiguration;
+
+        private const string CHARACTER_NAME_ID = "<charname>";
+        private string characterRootPath => $"Characters/{CHARACTER_NAME_ID}";
+        private string characterPrefabPath => $"{characterRootPath}/Character - [{CHARACTER_NAME_ID}]";
+
+        [SerializeField] private RectTransform _characterpanel = null;
+        public RectTransform characterPanel => _characterpanel;
+
         private void Awake()
         {
             instance = this;
@@ -51,27 +57,36 @@ namespace CHARACTERS
 
             result.name = characterName;
             result.config = config.GetConfig(characterName);
+            result.prefab = GetPrefabForCharacter(characterName);
+            Debug.Log(result.prefab);
             return result;
 
         }
+        private GameObject GetPrefabForCharacter(string characterName)
+        {
+            string pefabPath = FormatCharaterPath(characterPrefabPath, characterName);
+        
+            return Resources.Load<GameObject>(pefabPath);
+        }
+        private string FormatCharaterPath(string path, string characterName) => path.Replace(CHARACTER_NAME_ID, characterName);
 
         private Character CreateCharacterFromInfo(CHARACTERINFO info)
         {
-
+            CharacterConfig config = info.config;
             switch (info.config.characterType)
             {
                 case Character.CharacterType.Text:
-                    return new CharacterText(info.name, info.config);
+                    return new CharacterText(info.name, config);
 
                 case Character.CharacterType.Sprite:
                 case Character.CharacterType.SpriteSheet:
-                    return new CharacterSprite(info.name, info.config);
+                    return new CharacterSprite(info.name, config, info.prefab);
 
                 case Character.CharacterType.Live2D:
-                    return new CharacterLive2D(info.name, info.config);
+                    return new CharacterLive2D(info.name, config, info.prefab);
 
                 case Character.CharacterType.Model3D:
-                    return new CharacterModel3D(info.name, info.config);
+                    return new CharacterModel3D(info.name, config, info.prefab);
                 default:
                     return null;
             }
@@ -81,6 +96,7 @@ namespace CHARACTERS
         {
             public string name = "";
             public CharacterConfig config;
+            public GameObject prefab = null;
         }
     }
 }
