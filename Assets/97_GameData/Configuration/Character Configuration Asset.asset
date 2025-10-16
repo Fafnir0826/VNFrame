@@ -52,6 +52,6 @@ MonoBehaviour:
     alias: gen
     characterType: 2
     nameColor: {r: 0.29992044, g: 1, b: 0, a: 1}
-    dialogueColor: {r: 0.57022077, g: 0.8113208, b: 0.5797172, a: 1}
+    dialogueColor: {r: 0, g: 0.09433961, b: 0.0045648157, a: 1}
     nameFont: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     dialogueFont: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

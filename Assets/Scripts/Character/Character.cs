@@ -4,10 +4,12 @@ using System.Collections;
 using DIALOGUE;
 using TMPro;
 using UnityEngine;
+
 namespace CHARACTERS
 {
     public abstract class Character
     {
+        public const bool ENABLE_ON_START = true;
         public string name = "";
         public string displayname = "";
         public RectTransform root = null;
@@ -18,8 +20,10 @@ namespace CHARACTERS
         public DialogueSystem dialogueSystem => DialogueSystem.instance;
         //Coroutines
         protected Coroutine co_revealing, co_hiding;
+        protected Coroutine co_moving;
         public bool isRevealing => co_revealing != null;
         public bool isHiding => co_hiding != null;
+        public bool isMoving => co_moving != null;
         public virtual bool isVisible => false;
         public Character(string name, CharacterConfig config, GameObject prefab)
         {
@@ -29,6 +33,7 @@ namespace CHARACTERS
             if (prefab != null)
             {
                 GameObject ob = Object.Instantiate(prefab, manager.characterPanel);
+                ob.name = manager.FormatCharaterPath(manager.characterPrefabNameFormat, name);
                 ob.SetActive(true);
                 root = ob.GetComponent<RectTransform>();
                 animator = root.GetComponentInChildren<Animator>();
@@ -40,15 +45,14 @@ namespace CHARACTERS
         public Coroutine Say(List<string> dialogue)
         {
             dialogueSystem.ShowSpeakerName(displayname);
-            UpdateTextCustomizationsOnScreen();
             dialogueSystem.ApplySpeakerDataToDialogueContainer(name);
-
+            UpdateTextCustomizationsOnScreen();
             return dialogueSystem.Say(dialogue);
         }
         public void SetNameFont(TMP_FontAsset font) => config.nameFont = font;
         public void SetDialogueFont(TMP_FontAsset font) => config.dialogueFont = font;
         public void SetNameColor(Color color) => config.nameColor = color;
-        public void SetDialogueColor(Color color) => config.dialogueColor = color;
+        public void SetDialogueColor(Color color) { config.dialogueColor = color; }
         public void RestConfigurationData() => config = CharacterManager.instance.GetCharacterConfig(name);
         public void UpdateTextCustomizationsOnScreen() => dialogueSystem.ApplySpeakerDataToDialogueContainer(config);
 
@@ -80,6 +84,60 @@ namespace CHARACTERS
         {
             Debug.Log("Show/Hide");
             yield return null;
+        }
+
+        public virtual void SetPosition(Vector2 position)
+        {
+            if (root == null)
+                return;
+            (Vector2 minAnchorTarget, Vector2 maxAnchorTarget) = ConvertUITargetPositionToRelativeCharacterAnchorTarget(position);
+
+            root.anchorMin = minAnchorTarget;
+            root.anchorMax = maxAnchorTarget;
+        }
+        public virtual Coroutine MoveToPosition(Vector2 position, float speed = 2f, bool smooth = false)
+        {
+            if (root == null)
+                return null;
+            if (isMoving)
+                manager.StopCoroutine(co_moving);
+
+            co_moving = manager.StartCoroutine(MovingToPosition(position, speed, smooth));
+            return co_moving;
+        }
+        private IEnumerator MovingToPosition(Vector2 position, float speed = 2f, bool smooth = false)
+        {
+            (Vector2 minAnchorTarget, Vector2 maxAnchorTarget) = ConvertUITargetPositionToRelativeCharacterAnchorTarget(position);
+
+            Vector2 padding = root.anchorMax - root.anchorMin;
+            while (root.anchorMin != minAnchorTarget || root.anchorMax != maxAnchorTarget)
+            {
+                root.anchorMin = smooth ?
+                    Vector2.Lerp(root.anchorMin, minAnchorTarget, speed * Time.deltaTime)
+                    : Vector2.MoveTowards(root.anchorMin, minAnchorTarget, speed * Time.deltaTime * 0.35f);
+
+                root.anchorMax = root.anchorMin + padding;
+
+                if (smooth && Vector2.Distance(root.anchorMin, minAnchorTarget) <= 0.001f)
+                {
+                    root.anchorMin = minAnchorTarget;
+                    root.anchorMax = maxAnchorTarget;
+                }
+                yield return null;
+            }
+            Debug.Log("Done moving");
+            co_moving = null;
+        }
+        protected (Vector2, Vector2) ConvertUITargetPositionToRelativeCharacterAnchorTarget(Vector2 position)
+        {
+            Vector2 padding = root.anchorMax - root.anchorMin;
+
+            float maxX = 1f - padding.x;
+            float maxY = 1f - padding.y;
+            Vector2 minAnchorTarget = new Vector2(maxX * position.x, maxY * position.y);
+            Vector2 maxAnchorTarget = minAnchorTarget + padding;
+            return (minAnchorTarget, maxAnchorTarget);
+
         }
         public enum CharacterType
         {

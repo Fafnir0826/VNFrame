@@ -5,7 +5,7 @@ namespace CHARACTERS
 {
     public class CharacterLive2D : Character
     {
-        public CharacterLive2D(string name, CharacterConfig config, GameObject prefab) : base(name, config, prefab)
+        public CharacterLive2D(string name, CharacterConfig config, GameObject prefab, string rootAssetFolder) : base(name, config, prefab)
         {
 
         }

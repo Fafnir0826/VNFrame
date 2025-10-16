@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Unity.VisualScripting;
 
 
 namespace DIALOGUE
@@ -15,5 +16,10 @@ namespace DIALOGUE
 
         public void SetDialogueColor(Color color) => dialogueText.color = color;
         public void SetDialogueFont(TMP_FontAsset font) => dialogueText.font = font;
+        void Update()
+        {
+            Debug.Log(dialogueText.color);
+
+        }
     }
 }

@@ -49,7 +49,6 @@ namespace DIALOGUE
         {
             Character character = CharacterManager.instance.GetCharacter(speakerName);
             CharacterConfig config = character != null ? character.config : CharacterManager.instance.GetCharacterConfig(speakerName);
-
             ApplySpeakerDataToDialogueContainer(config);
         }
         public void ApplySpeakerDataToDialogueContainer(CharacterConfig config)
