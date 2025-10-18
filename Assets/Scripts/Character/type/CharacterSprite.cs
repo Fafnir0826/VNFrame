@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using CHARACTERS;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +17,12 @@ namespace CHARACTERS
         public List<CharacterSpriteLayer> layers = new List<CharacterSpriteLayer>();
 
         private string artAssetsDirectory = "";
+
+        public override bool isVisible
+        {
+            get { return isRevealing || rootCG.alpha == 1; }
+            set { rootCG.alpha = value ? 1 : 0; }
+        }
         public CharacterSprite(string name, CharacterConfig config, GameObject prefab, string rootAssetFolder) : base(name, config, prefab)
         {
             rootCG.alpha = ENABLE_ON_START ? 1 : 0;
@@ -33,7 +40,7 @@ namespace CHARACTERS
             {
                 Transform child = rendererRoot.transform.GetChild(i);
 
-                Image rendererImage = child.GetComponent<Image>();
+                Image rendererImage = child.GetComponentInChildren<Image>();
 
                 if (rendererImage != null)
                 {
@@ -53,30 +60,35 @@ namespace CHARACTERS
             if (config.characterType == CharacterType.SpriteSheet)
             {
                 string[] data = spriteName.Split(SPRITESHEET_TEX_SPRTIE_DELIMITTER);
+                Sprite[] spriteArray = new Sprite[0];
                 if (data.Length == 2)
                 {
                     string textureName = data[0];
                     spriteName = data[1];
-                    Sprite[] spriteArray = Resources.LoadAll<Sprite>($"{artAssetsDirectory}/{textureName}");
-                    if (spriteArray.Length == 0)
-                        Debug.LogWarning($"{name}   {textureName}");
+                    spriteArray = Resources.LoadAll<Sprite>($"{artAssetsDirectory}/{textureName}");
 
-
-                    return Array.Find(spriteArray, sprite => sprite.name == spriteName);
                 }
                 else
                 {
-                    Sprite[] defaultSpriteArray = Resources.LoadAll<Sprite>($"{artAssetsDirectory}/{SPRITESHEET_DEFAULT_SHEETNAME}");
-                    if (defaultSpriteArray.Length == 0)
-                        Debug.LogWarning($"{name}   {SPRITESHEET_DEFAULT_SHEETNAME}");
+                    spriteArray = Resources.LoadAll<Sprite>($"{artAssetsDirectory}/{SPRITESHEET_DEFAULT_SHEETNAME}");
 
-                    return Array.Find(defaultSpriteArray, sprite => sprite.name == spriteName);
                 }
+                if (spriteArray.Length == 0)
+                    Debug.LogWarning($"{name}......{SPRITESHEET_DEFAULT_SHEETNAME}");
+
+                return Array.Find(spriteArray, sprite => sprite.name == spriteName);
             }
             else
             {
                 return Resources.Load<Sprite>($"{artAssetsDirectory}/{spriteName}");
             }
+        }
+
+        public Coroutine TransitionSprite(Sprite sprite, int layer = 0, float speed = 1)
+        {
+            CharacterSpriteLayer spriteLayer = layers[layer];
+
+            return spriteLayer.TransitionSprite(sprite, speed);
         }
         public override IEnumerator ShowingOrHiding(bool show)
         {
@@ -90,6 +102,69 @@ namespace CHARACTERS
             }
             co_revealing = null;
             co_hiding = null;
+        }
+        public override void SetColor(Color color)
+        {
+            base.SetColor(color);
+
+            color = displayColor;
+
+            foreach (CharacterSpriteLayer layer in layers)
+            {
+                layer.StopChanginColor();
+                layer.SetColor(color);
+            }
+        }
+
+        public override IEnumerator ChangingColor(Color color, float speed)
+        {
+            foreach (CharacterSpriteLayer layer in layers)
+                layer.TransitionColor(color, speed);
+
+            yield return null;
+
+            while (layers.Any(l => l.isChanginColor))
+            {
+                yield return null;
+            }
+
+            co_changingColor = null;
+
+        }
+
+        public override IEnumerator Highlighting(bool highlight, float speedMultiplier)
+        {
+            Color targetColor = displayColor;
+
+            foreach (CharacterSpriteLayer layer in layers)
+                layer.TransitionColor(targetColor, speedMultiplier);
+            yield return null;
+
+            while (layers.Any(l => l.isChanginColor))
+                yield return null;
+
+
+            co_highlighting = null;
+
+        }
+
+        public override IEnumerator FaceDirection(bool FaceLeft, float speedMultiplier, bool immediate)
+        {
+            foreach (CharacterSpriteLayer layer in layers)
+            {
+                if (faceLeft)
+                    layer.FaceLeft(speedMultiplier, immediate);
+                else
+                    layer.FaceRight(speedMultiplier, immediate);
+
+            }
+            yield return null;
+
+            while (layers.Any(l => l.isFlapping))
+                yield return null;
+
+            co_flipping = null;
+
         }
     }
 }

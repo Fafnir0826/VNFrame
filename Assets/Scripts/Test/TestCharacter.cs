@@ -22,14 +22,18 @@ namespace TESTING
 
         IEnumerator Test()
         {
-            CharacterSprite guard1 = CreateCharacter("Guard1 as Generic") as CharacterSprite;
-            // CharacterSprite Raelin = CreateCharacter("Raelin") as CharacterSprite;
+            //CharacterSprite guard1 = CreateCharacter("Guard1 as Generic") as CharacterSprite;
+            CharacterSprite Raelin = CreateCharacter("Raelin") as CharacterSprite;
             // CharacterSprite student = CreateCharacter("Female Student 2") as CharacterSprite;
 
-           
-            Sprite sl = guard1.GetSprite("Characters-Monk");
-            guard1.SetSprite(sl);
+            yield return new WaitForSeconds(1);
 
+            Raelin.Animate("Hop");
+
+            yield return new WaitForSeconds(1);
+            Raelin.Animate("Shiver", true);
+            yield return new WaitForSeconds(1);
+            Raelin.Animate("Shiver", false);
             yield return null;
 
         }

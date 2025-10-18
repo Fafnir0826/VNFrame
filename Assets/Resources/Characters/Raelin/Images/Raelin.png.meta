@@ -216,8 +216,8 @@ TextureImporter:
       name: A_Scold
       rect:
         serializedVersion: 2
-        x: 5
-        y: 6512
+        x: 0
+        y: 6522
         width: 476
         height: 716
       alignment: 0
