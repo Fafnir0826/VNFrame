@@ -10,6 +10,7 @@ namespace CHARACTERS
 {
     public class CharacterManager : MonoBehaviour
     {
+
         public static CharacterManager instance { get; private set; }
         private Dictionary<string, Character> characters = new Dictionary<string, Character>();
 
@@ -24,7 +25,11 @@ namespace CHARACTERS
 
 
         [SerializeField] private RectTransform _characterpanel = null;
+        [SerializeField] private RectTransform _characterpanel_live2D = null;
+        [SerializeField] private RectTransform _characterpanel_Model3D = null;
         public RectTransform characterPanel => _characterpanel;
+        public RectTransform characterPanelLive2D => _characterpanel_live2D;
+        public RectTransform characterPanelModel3D => _characterpanel_Model3D;
 
         private void Awake()
         {
@@ -42,7 +47,7 @@ namespace CHARACTERS
                 return CreateCharacter(characterName);
             return null;
         }
-        public Character CreateCharacter(string characterName)
+        public Character CreateCharacter(string characterName, bool revealAfterCreation = false)
         {
             if (characters.ContainsKey(characterName.ToLower()))
             {
@@ -54,6 +59,8 @@ namespace CHARACTERS
 
             Character character = CreateCharacterFromInfo(info);
             characters.Add(info.name.ToLower(), character);
+            if (revealAfterCreation)
+                character.Show();
 
             return character;
         }
@@ -140,6 +147,7 @@ namespace CHARACTERS
             foreach (Character character in charactersSortingOrder)
             {
                 character.root.SetSiblingIndex(i++);
+                character.OnSort(i);
             }
         }
         private class CHARACTERINFO

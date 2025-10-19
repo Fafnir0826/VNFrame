@@ -51,7 +51,21 @@ namespace CHARACTERS
             this.config = config;
             if (prefab != null)
             {
-                GameObject ob = Object.Instantiate(prefab, CharacterManager.characterPanel);
+                RectTransform parentPanel = null;
+                switch (config.characterType)
+                {
+                    case CharacterType.Sprite:
+                    case CharacterType.SpriteSheet:
+                        parentPanel = CharacterManager.characterPanel;
+                        break;
+                    case CharacterType.Live2D:
+                        parentPanel = CharacterManager.characterPanelLive2D;
+                        break;
+                    case CharacterType.Model3D:
+                        parentPanel = CharacterManager.characterPanelModel3D;
+                        break;
+                }
+                GameObject ob = Object.Instantiate(prefab, parentPanel);
                 ob.name = CharacterManager.FormatCharaterPath(CharacterManager.characterPrefabNameFormat, name);
                 ob.SetActive(true);
                 root = ob.GetComponent<RectTransform>();
@@ -256,6 +270,15 @@ namespace CHARACTERS
             animator.SetTrigger(ANIMATION_REFRESH_TRIGGER);
         }
 
+        public virtual void OnSort(int sortingIndex)
+        {
+            return;
+        }
+        public virtual void OnReceiveCastingExpression(int layer, string expression)
+        {
+            return;
+        }
+    
         public enum CharacterType
         {
             Text,

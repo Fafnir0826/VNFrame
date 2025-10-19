@@ -55,3 +55,31 @@ MonoBehaviour:
     dialogueColor: {r: 0, g: 0.09433961, b: 0.0045648157, a: 1}
     nameFont: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     dialogueFont: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - name: Mao
+    alias: mao
+    characterType: 3
+    nameColor: {r: 1, g: 0.22052473, b: 0.0990566, a: 1}
+    dialogueColor: {r: 0.47592562, g: 0.8773585, b: 0.492652, a: 1}
+    nameFont: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    dialogueFont: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - name: Koharu
+    alias: koharu
+    characterType: 3
+    nameColor: {r: 1, g: 0.22052473, b: 0.0990566, a: 1}
+    dialogueColor: {r: 0.47592562, g: 0.8773585, b: 0.492652, a: 1}
+    nameFont: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    dialogueFont: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - name: Rice
+    alias: rice
+    characterType: 3
+    nameColor: {r: 1, g: 0.22052473, b: 0.0990566, a: 1}
+    dialogueColor: {r: 0.47592562, g: 0.8773585, b: 0.492652, a: 1}
+    nameFont: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    dialogueFont: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - name: Natori
+    alias: natori
+    characterType: 3
+    nameColor: {r: 1, g: 0.22052473, b: 0.0990566, a: 1}
+    dialogueColor: {r: 0.47592562, g: 0.8773585, b: 0.492652, a: 1}
+    nameFont: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    dialogueFont: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

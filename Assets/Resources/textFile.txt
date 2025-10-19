@@ -1,11 +1,5 @@
-print_lp("This is a command runing")
+enter Female Student 2 [Blush] "I'm lacking anything of substance to say."
 
-John "Move Left and then Right" [wait]moveCharDemo(left), moveCharDemo(right)
+enter Stella as ??? at 1 [0:4,1:happy 4] "How is everyone doing today?"
 
-John "Let's play some music!" playSong("Funky Beets" -v 0.75 -p 1), setMood(chill)
-
-Elen "You have odd taste in music." playVoice("e_d1_v2" -v 1.5), setBackground(Room1 -t "Diagonal Lines" -s 3.5)
-
-setAccomplishment("A Legendary Boombox" true), setCLI(Elen 0:Angle1 1:Intrigued -s 2.3 -l true)
-
-showScene(false), StopMusic(all -s 1.5)
+Raelin "Fine.{wa 0.5} Couldn't be better."

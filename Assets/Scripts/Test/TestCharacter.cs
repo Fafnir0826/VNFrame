@@ -25,15 +25,13 @@ namespace TESTING
             //CharacterSprite guard1 = CreateCharacter("Guard1 as Generic") as CharacterSprite;
             CharacterSprite Raelin = CreateCharacter("Raelin") as CharacterSprite;
             // CharacterSprite student = CreateCharacter("Female Student 2") as CharacterSprite;
+             CharacterLive2D Mao = CreateCharacter("Mao") as CharacterLive2D;
+           //Raelin.Show();
+             Raelin.SetPosition(new Vector2(0, 0));
+            Mao.SetPosition(new Vector2(1, 0));
 
-            yield return new WaitForSeconds(1);
 
-            Raelin.Animate("Hop");
 
-            yield return new WaitForSeconds(1);
-            Raelin.Animate("Shiver", true);
-            yield return new WaitForSeconds(1);
-            Raelin.Animate("Shiver", false);
             yield return null;
 
         }

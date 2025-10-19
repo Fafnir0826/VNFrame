@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using CHARACTERS;
 using UnityEngine;
 using UnityEngine.UI;
@@ -80,7 +81,9 @@ namespace CHARACTERS
             }
             else
             {
+               
                 return Resources.Load<Sprite>($"{artAssetsDirectory}/{spriteName}");
+
             }
         }
 
@@ -165,6 +168,17 @@ namespace CHARACTERS
 
             co_flipping = null;
 
+        }
+
+        public override void OnReceiveCastingExpression(int layer, string expression)
+        {
+            Sprite sprite = GetSprite(expression);
+
+            if (sprite == null)
+            {
+                return;
+            }
+            TransitionSprite(sprite, layer);
         }
     }
 }
