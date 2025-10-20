@@ -104,7 +104,7 @@ namespace DIALOGUE
 
             foreach (CommandData.Command command in commands)
             {
-                if (command.waitForCompletion)
+                if (command.waitForCompletion || command.name == "wait")
                     yield return CommandManager.instance.Execute(command.name, command.arguments);
                 else
                     CommandManager.instance.Execute(command.name, command.arguments);

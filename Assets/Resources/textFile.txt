@@ -1,4 +1,16 @@
-enter Female Student 2 [Blush] "I'm lacking anything of substance to say."
+Wait(1), CreateCharacter(Stella), CreateCharacter(Raelin), CreateCharacter("Guard1 as Generic" -e true -i true)
+
+MoveCharacter(Stella -x 0 -spd 0.75 -sm false)
+
+wait(1000)
+
+Move(Stella 0 1.2 false)
+
+Show(Stella Raelin Guard1 -immediate false)
+
+Narrator "Showing characters."
+
+enter Female Student 2 [blush] "I'm lacking anything of substance to say."
 
 enter Stella as ??? at 1 [0:4,1:happy 4] "How is everyone doing today?"
 
