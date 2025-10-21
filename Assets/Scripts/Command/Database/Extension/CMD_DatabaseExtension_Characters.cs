@@ -21,13 +21,28 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
         database.AddCommand("movecharacter", new Func<string[], IEnumerator>(MoveCharacter));
         database.AddCommand("show", new Func<string[], IEnumerator>(ShowAll));
         database.AddCommand("hide", new Func<string[], IEnumerator>(HideAll));
+
+        //Add commands to characters
+        CommandDatabase baseCommands = CommandManager.instance.CreateSubDatabase(CommandManager.DATABASE_CHARACTERS_BASE);
+        baseCommands.AddCommand("move", new Func<string[], IEnumerator>(MoveCharacter));
+        baseCommands.AddCommand("show", new Func<string[], IEnumerator>(Show));
+        baseCommands.AddCommand("hide", new Func<string[], IEnumerator>(Hide));
+        baseCommands.AddCommand("setpriority", new Action<string[]>(SetPriority));
+        baseCommands.AddCommand("setposition", new Action<string[]>(SetPosition));
+        baseCommands.AddCommand("setcolor", new Func<string[], IEnumerator>(SetColor));
+        baseCommands.AddCommand("highlight", new Func<string[], IEnumerator>(Highlight));
+        baseCommands.AddCommand("unhighlight", new Func<string[], IEnumerator>(Unhighlight));
+
+        //Add character specific databases
+        CommandDatabase spriteCommands = CommandManager.instance.CreateSubDatabase(CommandManager.DATABASE_CHARACTERS_SPRITE);
+        spriteCommands.AddCommand("SetSprite", new Func<string[], IEnumerator>(SetSprite));
     }
     public static void CreateCharacter(string[] data)
     {
         string characterName = data[0];
         bool enable = false;
         bool immediate = false;
-        var parameters = ConverDataToParameters(data);
+        var parameters = ConverDataToParameters(data, startingIndex: 1);
         parameters.TryGetValue(PARAM_ENABLE, out enable, defaulValue: false);
         parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaulValue: false);
 
@@ -71,8 +86,6 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
             yield return character.MoveToPosition(position, speed, smooth);
         }
     }
-
-    // 1 reference
     public static IEnumerator ShowAll(string[] data)
     {
         List<Character> characters = new List<Character>();
@@ -109,8 +122,6 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
                 yield return null;
         }
     }
-
-    // 1 reference
     public static IEnumerator HideAll(string[] data)
     {
         List<Character> characters = new List<Character>();
@@ -151,6 +162,227 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
             while (characters.Any(c => c.isHiding))
                 yield return null;
         }
+    }
+
+    public static IEnumerator HighlightAll(string[] data)
+    {
+        List<Character> characters = new List<Character>();
+        bool immediate = false;
+        bool handleUnspecifiedCharacters = true;
+        List<Character> unspecifiedCharacters = new List<Character>();
+
+        //Add any characters specified to be highlighted.
+        for (int i = 0; i < data.Length; i++)
+        {
+            Character character = CharacterManager.instance.GetCharacter(data[i], createIfDoesNotExist: false);
+            if (character != null)
+            {
+                characters.Add(character);
+            }
+        }
+
+        if (characters.Count == 0)
+            yield break;
+
+        //Grab the extra parameters
+        var parameters = ConverDataToParameters(data, startingIndex: 1);
+
+        parameters.TryGetValue(new string[] { "-i", "-immediate" }, out immediate, defaulValue: false);
+        parameters.TryGetValue(new string[] { "-o", "-only" }, out handleUnspecifiedCharacters, defaulValue: true);
+
+        //Make all characters perform the logic
+        foreach (Character character in characters)
+        {
+            character.Hightlight(immediate: immediate);
+        }
+
+        //If we are forcing any unspecified characters to use the opposite highlighted status
+        if (handleUnspecifiedCharacters)
+        {
+            foreach (Character character in CharacterManager.instance.allCharacters)
+            {
+                if (characters.Contains(character))
+                    continue;
+
+                unspecifiedCharacters.Add(character);
+                character.UnHightlight(immediate: immediate);
+            }
+        }
+
+        //Wait for all characters to finish highlighting
+        //Wait for all characters to finish highlighting.
+        if (!immediate)
+        {
+            CommandManager.instance.AddTerminationActionToCurrentProcess(() =>
+            {
+                foreach (var character in characters)
+                {
+                    character.Hightlight(immediate: true);
+                }
+
+                if (handleUnspecifiedCharacters)
+                {
+                    foreach (var character in unspecifiedCharacters)
+                    {
+                        character.UnHightlight(immediate: true);
+                    }
+                }
+            });
+
+            while (characters.Any(c => c.isHightlighting) || (handleUnspecifiedCharacters && unspecifiedCharacters.Any(uc => uc.isUnHightlighting)))
+            {
+                yield return null;
+            }
+        }
+    }
+
+    public static IEnumerator UnhighlightAll(string[] data)
+    {
+        List<Character> characters = new List<Character>();
+        bool immediate = false;
+        bool handleUnspecifiedCharacters = true;
+        List<Character> unspecifiedCharacters = new List<Character>();
+
+        //Add any characters specified to be highlighted.
+        for (int i = 0; i < data.Length; i++)
+        {
+            Character character = CharacterManager.instance.GetCharacter(data[i], createIfDoesNotExist: false);
+            if (character != null)
+            {
+                characters.Add(character);
+            }
+        }
+
+        if (characters.Count == 0)
+            yield break;
+
+        //Grab the extra parameters
+        var parameters = ConverDataToParameters(data, startingIndex: 1);
+
+        parameters.TryGetValue(new string[] { "-i", "-immediate" }, out immediate, defaulValue: false);
+        parameters.TryGetValue(new string[] { "-o", "-only" }, out handleUnspecifiedCharacters, defaulValue: true);
+
+        //Make all characters perform the logic
+        foreach (Character character in characters)
+        {
+            character.Hightlight(immediate: immediate);
+        }
+
+        //If we are forcing any unspecified characters to use the opposite highlighted status
+        if (handleUnspecifiedCharacters)
+        {
+            foreach (Character character in CharacterManager.instance.allCharacters)
+            {
+                if (characters.Contains(character))
+                    continue;
+
+                unspecifiedCharacters.Add(character);
+                character.Hightlight(immediate: immediate);
+            }
+        }
+
+        //Wait for all characters to finish highlighting
+        //Wait for all characters to finish highlighting.
+        if (!immediate)
+        {
+            CommandManager.instance.AddTerminationActionToCurrentProcess(() =>
+            {
+                foreach (var character in characters)
+                {
+                    character.Hightlight(immediate: true);
+                }
+
+                if (handleUnspecifiedCharacters)
+                {
+                    foreach (var character in unspecifiedCharacters)
+                    {
+                        character.UnHightlight(immediate: true);
+                    }
+                }
+            });
+
+            while (characters.Any(c => c.isUnHightlighting) || (handleUnspecifiedCharacters && unspecifiedCharacters.Any(uc => uc.isHightlighting)))
+            {
+                yield return null;
+            }
+        }
+    }
+
+    public static IEnumerator SetSprite(string[] data)
+    {
+        //Format: SetSprite(character sprite)
+        CharacterSprite character = CharacterManager.instance.GetCharacter(data[0], createIfDoesNotExist: false) as CharacterSprite;
+        int layer = 0;
+        string spriteName;
+        bool immediate = false;
+        float speed;
+
+        if (character == null || data.Length < 2)
+            yield break;
+
+        //Grab the extra parameters
+        var parameters = ConverDataToParameters(data, startingIndex: 1);
+
+        //Try to get the sprite name
+        parameters.TryGetValue(new string[] { "-s", "-sprite" }, out spriteName);
+
+        //Try to get the layer
+        parameters.TryGetValue(new string[] { "-l", "-layer" }, out layer, defaulValue: 0);
+
+        //Try to get the transition speed
+        bool specifiedSpeed = parameters.TryGetValue(PARAM_SPEED, out speed, defaulValue: 0.1f);
+
+        //Try to get whether this is an immediate transition or not
+        if (!specifiedSpeed)
+        {
+            parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaulValue: true);
+        }
+
+        //Run the logic
+        Sprite sprite = character.GetSprite(spriteName);
+
+        if (sprite == null)
+            yield break;
+
+        if (immediate)
+        {
+            character.SetSprite(sprite, layer);
+        }
+        else
+        {
+            CommandManager.instance.AddTerminationActionToCurrentProcess(() => character?.SetSprite(sprite, layer));
+            yield return character.TransitionSprite(sprite, layer, speed);
+        }
+    }
+
+
+    public static IEnumerator Show(string[] data)
+    {
+        yield return null;
+    }
+    public static IEnumerator Hide(string[] data)
+    {
+        yield return null;
+    }
+    public static void SetPriority(string[] data)
+    {
+
+    }
+    public static void SetPosition(string[] data)
+    {
+
+    }
+    public static IEnumerator SetColor(string[] data)
+    {
+        yield return null;
+    }
+    public static IEnumerator Highlight(string[] data)
+    {
+        yield return null;
+    }
+    public static IEnumerator Unhighlight(string[] data)
+    {
+        yield return null;
     }
 
 }

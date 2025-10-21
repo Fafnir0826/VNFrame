@@ -1,17 +1,34 @@
-Wait(1), CreateCharacter(Stella), CreateCharacter(Raelin), CreateCharacter("Guard1 as Generic" -e true -i true)
+CreateCharacter(Stella 1 -e true -i true), CreateCharacter(Raelin -e true -i true), CreateCharacter("Guard1 as Generic" -e false)
 
-MoveCharacter(Stella -x 0 -spd 0.75 -sm false)
+Raelin.SetPosition(1), Stella.SetPosition(0)
 
-wait(1000)
+wait(1)
 
-Move(Stella 0 1.2 false)
+Raelin.SetSprite(A2 -l 0 -spd 0.75), Raelin.SetSprite(A_Scared -l 1 -spd 0.75)
 
-Show(Stella Raelin Guard1 -immediate false)
+CreateCharacter(Emily)
 
-Narrator "Showing characters."
+Emily.SetSprite(Happy)
 
-enter Female Student 2 [blush] "I'm lacking anything of substance to say."
+Emily "Hi!"
 
-enter Stella as ??? at 1 [0:4,1:happy 4] "How is everyone doing today?"
+wait(1)
 
-Raelin "Fine.{wa 0.5} Couldn't be better."
+[wait]MoveCharacter(Stella 1 -2.5 -spd 0.5)
+
+[wait]Stella.Hide(), [wait]Stella.Show()
+
+[wait]Stella.Move(0 1 -spd 0.5)
+
+Hide(Stella Guard1 Raelin -spd 0.1)
+Stella "Now we are invisible"
+
+Show(Stella Guard1 Raelin -spd 0.1)
+
+Stella "Thank you for joining me!"
+
+MoveCharacter(Guard1 0 -spd 0.1), MoveCharacter(Raelin 0.1 -spd 0.1), Hide(Stella)
+Guard1 "Where did she go?"
+
+Raelin "I don't know!"
+Guard1 "Did we miss her?"

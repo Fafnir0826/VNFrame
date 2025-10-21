@@ -191,7 +191,7 @@ namespace CHARACTERS
             Debug.Log("Set color...");
             yield return null;
         }
-        public Coroutine Hightlight(float speed = 1f)
+        public Coroutine Hightlight(float speed = 1f, bool immediate = false)
         {
             if (isHightlighting)
                 return co_highlighting;
@@ -199,12 +199,12 @@ namespace CHARACTERS
                 CharacterManager.StopCoroutine(co_highlighting);
 
             highlighted = true;
-            co_highlighting = CharacterManager.StartCoroutine(Highlighting(highlighted, speed));
+            co_highlighting = CharacterManager.StartCoroutine(Highlighting(speed,immediate ));
 
             return co_highlighting;
         }
 
-        public Coroutine UnHightlight(float speed = 1f)
+        public Coroutine UnHightlight(float speed = 1f, bool immediate = false)
         {
             if (isUnHightlighting)
                 return co_highlighting;
@@ -213,13 +213,14 @@ namespace CHARACTERS
                 CharacterManager.StopCoroutine(co_highlighting);
 
             highlighted = false;
-            co_highlighting = CharacterManager.StartCoroutine(Highlighting(highlighted, speed));
+            co_highlighting = CharacterManager.StartCoroutine(Highlighting(speed, immediate));
 
             return co_highlighting;
         }
 
-        public virtual IEnumerator Highlighting(bool highlight, float speedMultiplier)
+        public virtual IEnumerator Highlighting(float speedMultiplier, bool highlight)
         {
+
             yield return null;
         }
         public Coroutine Flip(float speed = 1, bool immediate = false)
@@ -278,7 +279,7 @@ namespace CHARACTERS
         {
             return;
         }
-    
+
         public enum CharacterType
         {
             Text,

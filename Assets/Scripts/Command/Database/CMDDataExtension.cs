@@ -8,6 +8,6 @@ namespace COMMANDS
     {
         public static void Extend(CommandDatabase database) { }
 
-        public static CommandParamters ConverDataToParameters(string[] data) => new CommandParamters(data);
+        public static CommandParamters ConverDataToParameters(string[] data, int startingIndex = 0) => new CommandParamters(data, startingIndex);
     }
 }

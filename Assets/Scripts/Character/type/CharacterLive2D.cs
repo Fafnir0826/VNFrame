@@ -40,11 +40,11 @@ namespace CHARACTERS
         }
         public void SetExpression(int expressionIndex)
         {
-             expressionController.CurrentExpressionIndex = expressionIndex;
+            expressionController.CurrentExpressionIndex = expressionIndex;
         }
         public void SetExpression(string expressionName)
         {
-             expressionController.CurrentExpressionIndex = GetExpressionIndexByName(expressionName);
+            expressionController.CurrentExpressionIndex = GetExpressionIndexByName(expressionName);
         }
 
         private int GetExpressionIndexByName(string expressionName)
@@ -87,10 +87,23 @@ namespace CHARACTERS
 
             co_changingColor = null;
         }
-        public override IEnumerator Highlighting(bool highlight, float speedMultiplier)
+        public override IEnumerator Highlighting(float speedMultiplier, bool immediate = false)
         {
-            Color targetColor = displayColor;
-            yield return ChangingColorL2D(targetColor, speedMultiplier);
+            if (!isChanginColor)
+            {
+                if (immediate)
+                {
+                    foreach (var renderer in renderController.Renderers)
+                        renderer.Color = displayColor;
+                }
+                else
+                {
+                    Color targetColor = displayColor;
+                    yield return ChangingColorL2D(targetColor, speedMultiplier);
+                }
+            }
+
+
             co_highlighting = null;
         }
 
@@ -157,7 +170,7 @@ namespace CHARACTERS
 
         public override void OnSort(int sortingIndex)
         {
-            renderController.SortingOrder = sortingIndex *CHARACTER_SORTING_DEPTH_SIZE;
+            renderController.SortingOrder = sortingIndex * CHARACTER_SORTING_DEPTH_SIZE;
         }
     }
 }

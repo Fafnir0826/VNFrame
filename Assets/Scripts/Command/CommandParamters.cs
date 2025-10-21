@@ -12,9 +12,9 @@ namespace COMMANDS
         private List<string> unlabledParameters = new List<string>();
 
         // 0 references
-        public CommandParamters(string[] parameterArray)
+        public CommandParamters(string[] parameterArray, int startingIndex = 0)
         {
-            for (int i = 0; i < parameterArray.Length; i++)
+            for (int i = startingIndex; i < parameterArray.Length; i++)
             {
                 if (parameterArray[i].StartsWith(PARAMETER_IDENTIFIER) && !float.TryParse(parameterArray[i], out _))
                 {
