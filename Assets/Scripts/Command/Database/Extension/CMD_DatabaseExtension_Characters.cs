@@ -358,11 +358,47 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
 
     public static IEnumerator Show(string[] data)
     {
-        yield return null;
+        string characterName = data[0];
+        Character character = CharacterManager.instance.GetCharacter(characterName);
+
+        if (character == null)
+            yield break;
+
+        bool immediate = false;
+        var parameters = ConverDataToParameters(data, startingIndex: 1);
+        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaulValue: false);
+
+        if (immediate)
+        {
+            character.isVisible = true;
+        }
+        else
+        {
+            CommandManager.instance.AddTerminationActionToCurrentProcess(() => character?.Show());
+            yield return character.Show();
+        }
     }
     public static IEnumerator Hide(string[] data)
     {
-        yield return null;
+        string characterName = data[0];
+        Character character = CharacterManager.instance.GetCharacter(characterName);
+
+        if (character == null)
+            yield break;
+
+        bool immediate = false;
+        var parameters = ConverDataToParameters(data, startingIndex: 1);
+        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaulValue: false);
+
+        if (immediate)
+        {
+            character.isVisible = false;
+        }
+        else
+        {
+            CommandManager.instance.AddTerminationActionToCurrentProcess(() => character?.Hide());
+            yield return character.Hide();
+        }
     }
     public static void SetPriority(string[] data)
     {
@@ -378,11 +414,33 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
     }
     public static IEnumerator Highlight(string[] data)
     {
-        yield return null;
+        string characterName = data[0];
+        Character character = CharacterManager.instance.GetCharacter(characterName);
+
+        if (character == null)
+            yield break;
+
+        bool immediate = false;
+        var parameters = ConverDataToParameters(data, startingIndex: 1);
+        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaulValue: false);
+
+        CommandManager.instance.AddTerminationActionToCurrentProcess(() => character?.Hightlight(immediate: true));
+        yield return character.Hightlight(immediate: immediate);
     }
     public static IEnumerator Unhighlight(string[] data)
     {
-        yield return null;
+        string characterName = data[0];
+        Character character = CharacterManager.instance.GetCharacter(characterName);
+
+        if (character == null)
+            yield break;
+
+        bool immediate = false;
+        var parameters = ConverDataToParameters(data, startingIndex: 1);
+        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaulValue: false);
+
+        CommandManager.instance.AddTerminationActionToCurrentProcess(() => character?.UnHightlight(immediate: true));
+        yield return character.UnHightlight(immediate: immediate);
     }
 
 }
