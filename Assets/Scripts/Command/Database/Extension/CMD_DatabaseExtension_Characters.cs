@@ -66,7 +66,10 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
         if (immediate)
             character.SetPosition(position);
         else
+        {
+            CommandManager.instance.AddTerminationActionToCurrentProcess(() => { character?.SetPosition(position); });
             yield return character.MoveToPosition(position, speed, smooth);
+        }
     }
 
     // 1 reference
@@ -140,6 +143,11 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
         }
         if (!immediate)
         {
+            CommandManager.instance.AddTerminationActionToCurrentProcess(() =>
+            {
+                foreach (Character character in characters)
+                    character.isVisible = true;
+            });
             while (characters.Any(c => c.isHiding))
                 yield return null;
         }
