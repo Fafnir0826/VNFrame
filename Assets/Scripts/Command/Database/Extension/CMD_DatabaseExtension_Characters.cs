@@ -43,8 +43,8 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
         bool enable = false;
         bool immediate = false;
         var parameters = ConverDataToParameters(data, startingIndex: 1);
-        parameters.TryGetValue(PARAM_ENABLE, out enable, defaulValue: false);
-        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaulValue: false);
+        parameters.TryGetValue(PARAM_ENABLE, out enable, defaultValue: false);
+        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaultValue: false);
 
         Character character = CharacterManager.instance.CreateCharacter(characterName);
         if (!enable)
@@ -73,9 +73,9 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
         //try to get the x axis position
         parameters.TryGetValue(PARAM_XPOS, out x);
         parameters.TryGetValue(PARAM_YPOS, out y);
-        parameters.TryGetValue(PARAM_SPEED, out speed, defaulValue: 1);
-        parameters.TryGetValue(PARAM_SMOOTH, out smooth, defaulValue: false);
-        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaulValue: false);
+        parameters.TryGetValue(PARAM_SPEED, out speed, defaultValue: 1);
+        parameters.TryGetValue(PARAM_SMOOTH, out smooth, defaultValue: false);
+        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaultValue: false);
 
         Vector2 position = new Vector2(x, y);
         if (immediate)
@@ -107,7 +107,7 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
 
         var parameters = ConverDataToParameters(data);
 
-        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaulValue: false);
+        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaultValue: false);
 
         foreach (Character character in characters)
         {
@@ -143,7 +143,7 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
 
         var parameters = ConverDataToParameters(data);
 
-        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaulValue: false);
+        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaultValue: false);
 
         foreach (Character character in characters)
         {
@@ -187,8 +187,8 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
         //Grab the extra parameters
         var parameters = ConverDataToParameters(data, startingIndex: 1);
 
-        parameters.TryGetValue(new string[] { "-i", "-immediate" }, out immediate, defaulValue: false);
-        parameters.TryGetValue(new string[] { "-o", "-only" }, out handleUnspecifiedCharacters, defaulValue: true);
+        parameters.TryGetValue(new string[] { "-i", "-immediate" }, out immediate, defaultValue: false);
+        parameters.TryGetValue(new string[] { "-o", "-only" }, out handleUnspecifiedCharacters, defaultValue: true);
 
         //Make all characters perform the logic
         foreach (Character character in characters)
@@ -259,8 +259,8 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
         //Grab the extra parameters
         var parameters = ConverDataToParameters(data, startingIndex: 1);
 
-        parameters.TryGetValue(new string[] { "-i", "-immediate" }, out immediate, defaulValue: false);
-        parameters.TryGetValue(new string[] { "-o", "-only" }, out handleUnspecifiedCharacters, defaulValue: true);
+        parameters.TryGetValue(new string[] { "-i", "-immediate" }, out immediate, defaultValue: false);
+        parameters.TryGetValue(new string[] { "-o", "-only" }, out handleUnspecifiedCharacters, defaultValue: true);
 
         //Make all characters perform the logic
         foreach (Character character in characters)
@@ -327,15 +327,15 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
         parameters.TryGetValue(new string[] { "-s", "-sprite" }, out spriteName);
 
         //Try to get the layer
-        parameters.TryGetValue(new string[] { "-l", "-layer" }, out layer, defaulValue: 0);
+        parameters.TryGetValue(new string[] { "-l", "-layer" }, out layer, defaultValue: 0);
 
         //Try to get the transition speed
-        bool specifiedSpeed = parameters.TryGetValue(PARAM_SPEED, out speed, defaulValue: 0.1f);
+        bool specifiedSpeed = parameters.TryGetValue(PARAM_SPEED, out speed, defaultValue: 0.1f);
 
         //Try to get whether this is an immediate transition or not
         if (!specifiedSpeed)
         {
-            parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaulValue: true);
+            parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaultValue: true);
         }
 
         //Run the logic
@@ -366,7 +366,7 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
 
         bool immediate = false;
         var parameters = ConverDataToParameters(data, startingIndex: 1);
-        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaulValue: false);
+        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaultValue: false);
 
         if (immediate)
         {
@@ -388,7 +388,7 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
 
         bool immediate = false;
         var parameters = ConverDataToParameters(data, startingIndex: 1);
-        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaulValue: false);
+        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaultValue: false);
 
         if (immediate)
         {
@@ -422,7 +422,7 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
 
         bool immediate = false;
         var parameters = ConverDataToParameters(data, startingIndex: 1);
-        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaulValue: false);
+        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaultValue: false);
 
         CommandManager.instance.AddTerminationActionToCurrentProcess(() => character?.Hightlight(immediate: true));
         yield return character.Hightlight(immediate: immediate);
@@ -437,7 +437,7 @@ public class CMD_DatabaseExtension_Characters : CMDDataExtension
 
         bool immediate = false;
         var parameters = ConverDataToParameters(data, startingIndex: 1);
-        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaulValue: false);
+        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaultValue: false);
 
         CommandManager.instance.AddTerminationActionToCurrentProcess(() => character?.UnHightlight(immediate: true));
         yield return character.UnHightlight(immediate: immediate);

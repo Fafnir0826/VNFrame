@@ -37,7 +37,7 @@ namespace COMMANDS
 
         public bool TryGetValue<T>(string parameterName, out T value, T defaulValue = default(T)) => TryGetValue(new string[] { parameterName }, out value, defaulValue);
 
-        public bool TryGetValue<T>(string[] parameterNames, out T value, T defaulValue = default(T))
+        public bool TryGetValue<T>(string[] parameterNames, out T value, T defaultValue = default(T))
         {
             foreach (string parameterName in parameterNames)
             {
@@ -64,7 +64,7 @@ namespace COMMANDS
 
 
             }
-            value = defaulValue;
+            value = defaultValue;
             return false;
         }
 
