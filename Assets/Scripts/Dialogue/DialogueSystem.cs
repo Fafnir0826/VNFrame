@@ -21,6 +21,8 @@ namespace DIALOGUE
         public event DialogueSystemEvent onUserPrompt_Next;
 
         public bool isRunningConversation => conversationManager.isRunning;
+
+        public DialogueContinuePrompt prompt;
         void Awake()
         {
             if (instance == null)

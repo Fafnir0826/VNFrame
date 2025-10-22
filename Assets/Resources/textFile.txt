@@ -1,34 +1,7 @@
-CreateCharacter(Stella 1 -e true -i true), CreateCharacter(Raelin -e true -i true), CreateCharacter("Guard1 as Generic" -e false)
-
-Raelin.SetPosition(1), Stella.SetPosition(0)
-
 wait(1)
 
-Raelin.SetSprite(A2 -l 0 -spd 0.75), Raelin.SetSprite(A_Scared -l 1 -spd 0.75)
+SetLayerMedia(background barracks)
 
-CreateCharacter(Emily)
+CreateCharacter(Stella -e true -i true)
 
-Emily.SetSprite(Happy)
-
-Emily "Hi!"
-
-wait(1)
-
-[wait]MoveCharacter(Stella 1 -2.5 -spd 0.5)
-
-[wait]Stella.Hide(), [wait]Stella.Show()
-
-[wait]Stella.Move(0 1 -spd 0.5)
-
-Hide(Stella Guard1 Raelin -spd 0.1)
-Stella "Now we are invisible"
-
-Show(Stella Guard1 Raelin -spd 0.1)
-
-Stella "Thank you for joining me!"
-
-MoveCharacter(Guard1 0 -spd 0.1), MoveCharacter(Raelin 0.1 -spd 0.1), Hide(Stella)
-Guard1 "Where did she go?"
-
-Raelin "I don't know!"
-Guard1 "Did we miss her?"
+Stella "Welcome"

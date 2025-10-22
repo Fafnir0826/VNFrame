@@ -16,9 +16,11 @@ public class CMD_DatabaseExtension_GraphicPanels : CMDDataExtension
     private static string[] PARAM_IMMEDIATE = new string[] { "-i", "-immediate" };
     private static string[] PARAM_BLENDTEX = new string[] { "-b", "-blend" };
     private static string[] PARAM_USEVIDEOAUDIO = new string[] { "-aud", "-audio" };
+    private const string HOME_DIRECTORY_SYMBOL = "~/";
     new public static void Extend(CommandDatabase database)
     {
         database.AddCommand("setlayermedia", new Func<string[], IEnumerator>(SetLayerMedia));
+        database.AddCommand("clearlayermedia", new Func<string[], IEnumerator>(ClearLayerMedia));
     }
     private static IEnumerator SetLayerMedia(string[] data)
     {
@@ -90,8 +92,62 @@ public class CMD_DatabaseExtension_GraphicPanels : CMDDataExtension
 
 
     }
+
+    private static IEnumerator ClearLayerMedia(string[] data)
+    {
+        //Parameters available to function
+        string panelName = "";
+        int layer = 0;
+        string mediaName = "";
+        float transitionSpeed = 0;
+        bool immediate = false;
+        string blendTexName = "";
+        Texture blendTex = null;
+
+        var parameters = ConverDataToParameters(data);
+        parameters.TryGetValue(PARAM_PANEL, out panelName);
+        GraphicPanel panel = GraphicPanelManager.instance.GetPanel(panelName);
+        if (panel == null)
+        {
+            Debug.LogError("can't to grab panel");
+            yield break;
+        }
+
+        //Try to get the layer to apply this graphic to
+        parameters.TryGetValue(PARAM_LAYER, out layer, defaultValue: -1);
+
+        //Try to get if this is an immediate effect or not
+        parameters.TryGetValue(PARAM_IMMEDIATE, out immediate, defaultValue: false);
+        //Try to get the speed of the transition if it is not an immediate effect
+        if (!immediate) // 根據邏輯判斷，如果是立即效果，就不需要速度，所以這裡應該是 !immediate
+        {
+            parameters.TryGetValue(PARAM_SPEED, out transitionSpeed, defaultValue: 1);
+        }
+
+        //Try to get the blending texture for the media if we are using one.
+        parameters.TryGetValue(PARAM_BLENDTEX, out blendTexName);
+        if (!immediate && blendTexName != string.Empty)
+            blendTex = Resources.Load<Texture>(Configs.resources_blendTextures + blendTexName);
+
+        if (layer == -1)
+            panel.Clear(transitionSpeed, blendTex, immediate);
+        else
+        {
+            GraphicLayer graphicLayer = panel.GetLayer(layer);
+            if (graphicLayer == null)
+            {
+                Debug.LogError("can not clear layer");
+            }
+
+            graphicLayer.Clear(transitionSpeed,blendTex,immediate);
+        }
+
+
+    }
     private static string GetPathToGraphic(string defaultPath, string graphicName)
     {
+        if (graphicName.StartsWith(HOME_DIRECTORY_SYMBOL))
+            return graphicName.Substring(HOME_DIRECTORY_SYMBOL.Length);
         return defaultPath + graphicName;
     }
 }

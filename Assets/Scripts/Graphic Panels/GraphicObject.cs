@@ -33,7 +33,7 @@ public class GraphicObject : MonoBehaviour
     private Coroutine co_fadingIn = null;
     private Coroutine co_fadingOut = null;
     // 0 references
-    public GraphicObject(GraphicLayer layer, string graphicPath, Texture tex)
+    public GraphicObject(GraphicLayer layer, string graphicPath, Texture tex, bool immediate)
     {
         this.graphicPath = graphicPath;
         this.layer = layer;
@@ -42,7 +42,7 @@ public class GraphicObject : MonoBehaviour
         renderer = ob.AddComponent<RawImage>();
 
         graphicName = tex.name;
-        InitGraphic();
+        InitGraphic(immediate);
         renderer.name = string.Format(NAME_FORMAT, graphicName);
 
         renderer.material.SetTexture(MATERIAL_FIELD_MAINTEX, tex);
@@ -50,7 +50,7 @@ public class GraphicObject : MonoBehaviour
     }
 
     // 0 references
-    private void InitGraphic()
+    private void InitGraphic(bool immediate = false)
     {
         renderer.transform.localPosition = Vector3.zero;
         renderer.transform.localScale = Vector3.one;
@@ -61,6 +61,7 @@ public class GraphicObject : MonoBehaviour
         rect.offsetMin = Vector2.zero;
         rect.offsetMax = Vector2.one;
         renderer.material = GetTransitionMaterial();
+        float startingOpacity = immediate ? 1.0f : 0.0f;
         renderer.material.SetFloat(MATERIAL_FIELD_BLEND, 0);
         renderer.material.SetFloat(MATERIAL_FIELD_ALPHA, 0);
     }
@@ -138,7 +139,7 @@ public class GraphicObject : MonoBehaviour
             DestroyBackgroundGraphicsOnLayer();
     }
 
-    private void Destroy()
+    public void Destroy()
     {
         if (layer.currentGraphic != null && layer.currentGraphic.renderer == renderer)
             layer.currentGraphic = null;

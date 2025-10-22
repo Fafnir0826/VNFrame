@@ -26,22 +26,27 @@ public class GraphicLayer
         return SetTexture(tex, transitionSpeed, blendingTexture, filePath);
     }
 
-    public Coroutine SetTexture(Texture tex, float transitionSpeed = 1f, Texture blendingTexture = null, string filePath = "")
+    public Coroutine SetTexture(Texture tex, float transitionSpeed = 1f, Texture blendingTexture = null, string filePath = "", bool immediate = false)
     {
-        return CreateGraphic(tex, transitionSpeed, filePath, blendingTexture: blendingTexture);
+        return CreateGraphic(tex, transitionSpeed, filePath, blendingTexture: blendingTexture, immediate: immediate);
     }
     private Coroutine CreateGraphic<T>(T graphicData, float transitionSpeed, string filePath, bool useAudioForVideo = true, Texture blendingTexture = null, bool immediate = false)
     {
         GraphicObject newGraphic = null;
 
         if (graphicData is Texture)
-            newGraphic = new GraphicObject(this, filePath, graphicData as Texture);
+            newGraphic = new GraphicObject(this, filePath, graphicData as Texture, immediate);
 
         if (currentGraphic != null && !oldGraphics.Contains(currentGraphic))
             oldGraphics.Add(currentGraphic);
 
         currentGraphic = newGraphic;
-        return currentGraphic.FadeIn(transitionSpeed, blendingTexture);
+
+        if (!immediate)
+            return currentGraphic.FadeIn(transitionSpeed, blendingTexture);
+
+        DestroyOldGraphic();
+        return null;
     }
     public void DestroyOldGraphic()
     {
@@ -50,12 +55,23 @@ public class GraphicLayer
 
         oldGraphics.Clear();
     }
-    public void Clear()
+    public void Clear(float transitionSpeed = 1, Texture blendTexture = null, bool immediate = false)
     {
         if (currentGraphic != null)
-            currentGraphic.FadeOut();
+        {
+            if (!immediate)
+                currentGraphic.FadeOut(transitionSpeed, blendTexture);
+            else
+                currentGraphic.Destroy();
+        }
 
         foreach (var g in oldGraphics)
-            g.FadeOut();
+        {
+            if (!immediate)
+                g.FadeOut(transitionSpeed, blendTexture);
+            else
+                g.Destroy();
+        }
+
     }
 }
