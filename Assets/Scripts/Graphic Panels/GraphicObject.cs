@@ -9,6 +9,7 @@ using UnityEngine.Video;
 public class GraphicObject : MonoBehaviour
 {
     private const string NAME_FORMAT = "Graphic - [{0}]";
+    private const string DEFAULT_UI_MATERAIL = "Default UI Material";
     private const string MATERIAL_PATH = "Materials/layerTransitionMaterial";
     private const string MATERIAL_FIELD_COLOR = "_Color";
     private const string MATERIAL_FIELD_MAINTEX = "_MainTex";
@@ -115,6 +116,12 @@ public class GraphicObject : MonoBehaviour
     {
         bool isBlending = blend != null;
         bool fadeIn = target > 0;
+        if (renderer.material.name == DEFAULT_UI_MATERAIL)
+        {
+            Texture tex = renderer.material.GetTexture(MATERIAL_FIELD_MAINTEX);
+            renderer.material = GetTransitionMaterial();
+            renderer.material.SetTexture(MATERIAL_FIELD_MAINTEX, tex);
+        }
 
         renderer.material.SetTexture(MATERIAL_FIELD_BLENDTEX, blend);
         renderer.material.SetFloat(MATERIAL_FIELD_ALPHA, isBlending ? 1 : (fadeIn ? 0 : 1));
@@ -136,7 +143,11 @@ public class GraphicObject : MonoBehaviour
         if (target == 0)
             Destroy();
         else
+        {
             DestroyBackgroundGraphicsOnLayer();
+            renderer.texture = renderer.material.GetTexture(MATERIAL_FIELD_MAINTEX);
+            renderer.material = null;
+        }
     }
 
     public void Destroy()
