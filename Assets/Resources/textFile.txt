@@ -1,7 +1,7 @@
-wait(1)
+SetWorldCanvasMedia(barracks)
+wait(2)
+  
+camerazoomin(-spd 2)
+wait(0.5)
+camerareset(-spd 1)
 
-SetLayerMedia(background barracks)
-
-CreateCharacter(Stella -e true -i true)
-
-Stella "Welcome"

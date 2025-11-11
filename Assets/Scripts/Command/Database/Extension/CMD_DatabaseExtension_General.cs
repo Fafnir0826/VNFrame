@@ -12,8 +12,8 @@ public class CMD_DatabaseExtension_General : CMDDataExtension
     new public static void Extend(CommandDatabase database)
     {
         database.AddCommand("wait", new Func<string, IEnumerator>(Wait));
-        database.AddCommand("show", new Func<string[], IEnumerator>(ShowDialogueSystem));
-        database.AddCommand("hide", new Func<string[], IEnumerator>(HideDialogueSystem));
+        database.AddCommand("showui", new Func<string[], IEnumerator>(ShowDialogueSystem));
+        database.AddCommand("hideui", new Func<string[], IEnumerator>(HideDialogueSystem));
 
         database.AddCommand("showdb", new Func<string[], IEnumerator>(ShowDialogueBox));
         database.AddCommand("hidedb", new Func<string[], IEnumerator>(HideDialogueBox));
